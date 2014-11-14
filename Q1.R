@@ -29,3 +29,5 @@ temp1$weekday <- paste("Day ", temp1$weekday)
 write.csv(temp1, file = "Q1.csv")
 
 ggplot(temp1, aes(datetime, avg_flow, color=weekday)) + geom_line(aes(group = weekday))
+
+ggsave(file="Q1.pdf")
