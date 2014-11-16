@@ -2,7 +2,7 @@ library(ggplot2)
 
 raindata = read.table(file="raindata.csv",  header=TRUE, sep=",")
 attach(raindata)
-raindata[rainfall>0,]
+raindata =raindata[rainfall>0,]
 
 ##	split time
 temptime <- read.table(textConnection(as.character(raindata$datetime)))
