@@ -3,7 +3,7 @@ library(ggplot2)
 flowdata = read.table(file="flowdata.csv",  header=TRUE, sep=",")
 avg_small_flow_data = subset(flowdata, select = c(datetime, avg_small_flow, weekday))
 attach(avg_small_flow_data)
-avg_small_flow_data[avg_small_flow>0,]
+avg_small_flow_data = avg_small_flow_data[avg_small_flow>0,]
 
 ##	split time
 
