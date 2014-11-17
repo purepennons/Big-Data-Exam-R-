@@ -122,6 +122,50 @@ ggsave(file="Q2_big.pdf")
 
 ###########################################################
 
+##	Q3
+
+library(ggplot2)
+
+flowdata = read.table(file="flowdata.csv",  header=TRUE, sep=",")
+avg_flow_data = subset(flowdata, select = c(datetime, avg_flow, weekday))
+attach(avg_flow_data)
+avg_flow_data =avg_flow_data[avg_flow>-1&weekday<6,]
+
+##	split time
+temptime <- read.table(textConnection(as.character(avg_flow_data$datetime)))
+avg_flow_data$datetime <- temptime$V2
+
+temp1 = aggregate(avg_flow_data[2:2], by=list(avg_flow_data$datetime), mean)
+
+##	rename col names.
+colnames(temp1) <- c("datetime", "avg_flow")
+
+print("Max: ")
+print(temp1[temp1$avg_flow==max(temp1$avg_flow),])
+library(ggplot2)
+
+flowdata = read.table(file="flowdata.csv",  header=TRUE, sep=",")
+avg_flow_data = subset(flowdata, select = c(datetime, avg_flow, weekday))
+attach(avg_flow_data)
+avg_flow_data =avg_flow_data[avg_flow>-1&weekday<6,]
+
+##	split time
+temptime <- read.table(textConnection(as.character(avg_flow_data$datetime)))
+avg_flow_data$datetime <- temptime$V2
+
+temp1 = aggregate(avg_flow_data[2:2], by=list(avg_flow_data$datetime), mean)
+
+##	rename col names.
+colnames(temp1) <- c("datetime", "avg_flow")
+
+print(temp1[temp1$avg_flow<37,])
+print("Max: ")
+print(temp1[temp1$avg_flow==max(temp1$avg_flow),])
+print("Min: ")
+print(temp1[temp1$avg_flow==min(temp1$avg_flow),])
+
+###########################################################
+
 ##	Q4
 
 library(ggplot2)
