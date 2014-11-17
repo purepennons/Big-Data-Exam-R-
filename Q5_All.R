@@ -1,4 +1,6 @@
 library(ggplot2)
+library(plyr)
+library(reshape2)
 
 flowdata = read.table(file="flowdata.csv",  header=TRUE, sep=",")
 raindata = read.table(file="raindata.csv",  header=TRUE, sep=",")
@@ -33,26 +35,22 @@ mergedataExist$datetime <- temptime$V2
 withRain = mergedataExist[rainfall>0,]
 withoutRain = mergedataExist[rainfall==0,]
 
-withRainAgg = aggregate(withRain[2:2], by=list(withRain$weekday, withRain$datetime), mean)
-withoutRainAgg = aggregate(withoutRain[2:2], by=list(withoutRain$weekday, withoutRain$datetime), mean)
+# withRainAgg = aggregate(withRain[2:2], by=list(withRain$weekday, withRain$datetime), mean)
+# withoutRainAgg = aggregate(withoutRain[2:2], by=list(withoutRain$weekday, withoutRain$datetime), mean)
+withRainAgg = aggregate(withRain[2:2], by=list(withRain$weekday), mean)
+withoutRainAgg = aggregate(withoutRain[2:2], by=list(withoutRain$weekday), mean)
 
-##	rename col names.
-colnames(withRainAgg) <- c("weekday", "datetime", "avg_flow")
-colnames(withoutRainAgg) <- c("weekday", "datetime", "avg_flow")
+withRainAgg = dplyr::mutate(withRainAgg, With_Rain="True")
+withoutRainAgg = dplyr::mutate(withoutRainAgg, With_Rain="False")
 
-##	sort by weekday
-withRainAgg = withRainAgg[with(withRainAgg, order(withRainAgg$weekday)),]
-withoutRainAgg = withoutRainAgg[with(withoutRainAgg, order(withoutRainAgg$weekday)),]
+rbindAgg = rbind(withRainAgg, withoutRainAgg)
+colnames(rbindAgg) <- c("weekday", "avg_flow", "With_Rain")
 
-##	rename content of weekday in order to avoid to become continuous values.
-withRainAgg$weekday <- paste("Day", withRainAgg$weekday, "_with_rain")
-withoutRainAgg$weekday <- paste("Day", withoutRainAgg$weekday, "_without_rain")
+rbindAgg$weekday <- paste("Day ", rbindAgg$weekday)
 
-combineData = rbind(withRainAgg, withoutRainAgg)
+##	output rbindAgg to .csv
+write.csv(rbindAgg, file = "Q5_mean_all.csv")
 
-##	output combineData to .csv
-write.csv(combineData, file = "Q5_mean_by_hour.csv")
+qplot(x=weekday, y= avg_flow, fill= With_Rain, data=rbindAgg, geom="bar", stat="identity", position="dodge")
 
-ggplot(combineData, aes(datetime, avg_flow, color=weekday)) + geom_line(aes(group = weekday))
-
-ggsave(file="Q5_mean_by_hour.pdf")
+ggsave(file="Q5_mean_all.pdf")
