@@ -45,5 +45,14 @@ withRainAgg = withRainAgg[with(withRainAgg, order(withRainAgg$weekday)),]
 withoutRainAgg = withoutRainAgg[with(withoutRainAgg, order(withoutRainAgg$weekday)),]
 
 ##	rename content of weekday in order to avoid to become continuous values.
-withRainAgg$weekday <- paste("Day ", withRainAgg$weekday)
-withoutRainAgg$weekday <- paste("Day ", withoutRainAgg$weekday)
+withRainAgg$weekday <- paste("with_rain_Day", withRainAgg$weekday)
+withoutRainAgg$weekday <- paste("without_rain_Day", withoutRainAgg$weekday)
+
+combineData = rbind(withRainAgg, withoutRainAgg)
+
+##	output combineData to .csv
+write.csv(combineData, file = "Q5.csv")
+
+ggplot(combineData, aes(datetime, avg_flow, color=weekday)) + geom_line(aes(group = weekday))
+
+ggsave(file="Q5.pdf")
