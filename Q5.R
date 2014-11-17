@@ -45,8 +45,8 @@ withRainAgg = withRainAgg[with(withRainAgg, order(withRainAgg$weekday)),]
 withoutRainAgg = withoutRainAgg[with(withoutRainAgg, order(withoutRainAgg$weekday)),]
 
 ##	rename content of weekday in order to avoid to become continuous values.
-withRainAgg$weekday <- paste("with_rain_Day", withRainAgg$weekday)
-withoutRainAgg$weekday <- paste("without_rain_Day", withoutRainAgg$weekday)
+withRainAgg$weekday <- paste("Day", withRainAgg$weekday, "_with_rain")
+withoutRainAgg$weekday <- paste("Day", withoutRainAgg$weekday, "_without_rain")
 
 combineData = rbind(withRainAgg, withoutRainAgg)
 
